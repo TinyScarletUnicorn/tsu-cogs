@@ -75,6 +75,6 @@ tweepy==4.4.0
 typing-extensions==3.10.0.2
 urllib3==1.26.12
 uvicorn==0.19.0
-uvloop==0.16.0
+# uvloop==0.16.0 This causes errors more often than it doesn't. It's a perf improvement for Red.
 wcwidth==0.2.5
 yarl==1.6.3
