@@ -12,7 +12,6 @@ from PIL import Image, ImageChops, ImageDraw, ImageFont
 from ply import lex
 from redbot.core import checks, commands
 from redbot.core.utils.chat_formatting import box
-
 from tsutils.cog_settings import CogSettings
 from tsutils.tsubaki.links import CLOUDFRONT_URL
 from tsutils.user_interaction import send_cancellation_message, send_confirmation_message
@@ -702,9 +701,6 @@ class PadBuildImageGenerator(object):
         p_w = self.params.PORTRAIT_WIDTH * math.ceil(team_size / 2) + self.params.PADDING * math.ceil(team_size / 10)
         p_h = (self.params.PORTRAIT_WIDTH + self.params.LATENTS_WIDTH
                + self.params.PADDING) * 2 * len(self.build['TEAM'])
-        self.build_img = Image.new('RGBA',
-                                   (p_w, p_h),
-                                   (255, 255, 255, 0))
         y_offset = 0
         for team in self.build['TEAM']:
             has_assist = any([card is not None for idx, card in enumerate(team) if idx % 2 == 1])
@@ -747,7 +743,7 @@ class PadBuildImage(commands.Cog):
 
     def __init__(self, bot, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
+        
         self.bot = bot
         self.settings = PadBuildImgSettings("padbuildimg")
 
