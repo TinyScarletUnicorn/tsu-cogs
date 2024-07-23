@@ -439,8 +439,9 @@ class MonsterGraph:
                         continue
                 exchanges[(int(vendor_id), ex.target_monster_id)].add(model)
         for (sell_id, buy_id), models in exchanges.items():
-            graph.add_edge(buy_id, sell_id, type='exchange_from', models=models)
-            graph.add_edge(sell_id, buy_id, type='exchange_for', models=models)
+            if buy_id in graph.nodes and sell_id in graph.nodes:  # Cop out for NA-only monsters
+                graph.add_edge(buy_id, sell_id, type='exchange_from', models=models)
+                graph.add_edge(sell_id, buy_id, type='exchange_for', models=models)
 
         return graph
 
