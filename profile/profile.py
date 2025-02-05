@@ -5,6 +5,7 @@ from io import BytesIO
 import discord
 from redbot.core import commands
 from redbot.core.utils.chat_formatting import box, pagify
+
 from tsutils.cog_settings import CogSettings
 from tsutils.formatting import normalize_server_name
 from tsutils.user_interaction import send_cancellation_message, send_confirmation_message
@@ -92,7 +93,7 @@ class Profile(commands.Cog):
         warning = "{} asked me to send you this message. Report any harassment to the mods.".format(
             ctx.author.name)
         msg = warning + "\n" + profile_msg
-        await ctx.send(user, msg)
+        await user.send(msg)
         await send_confirmation_message(ctx, "Sent your profile to " + user.name)
 
     @commands.command()
