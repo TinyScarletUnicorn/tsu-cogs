@@ -170,9 +170,11 @@ class IdView(BaseIdMainView, EvoScrollView):
         if len(m.awakenings) == 0:
             return Box(Text('No Awakenings'))
 
+        is_transform = m != transform_base
+
         return Box(
             Box(
-                get_emoji(cls.up_emoji_name) if m != transform_base else '',
+                get_emoji(cls.up_emoji_name) if is_transform else None,
                 cls.normal_awakenings_row(m),
                 delimiter=' '
             ),
@@ -180,8 +182,9 @@ class IdView(BaseIdMainView, EvoScrollView):
                 '\N{DOWN-POINTING RED TRIANGLE}',
                 IdView.all_awakenings_row(transform_base, transform_base),
                 delimiter=' '
-            ) if m != transform_base else None,
+            ) if is_transform else None,
             cls.super_awakenings_row(m),
+            cls.sync_awakening_row(m) if not is_transform else None,
         )
 
     @staticmethod

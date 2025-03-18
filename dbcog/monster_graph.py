@@ -133,14 +133,16 @@ TRANSFORMS_QUERY = """SELECT
 FROM
   transformations{0}"""
 
+AWOKEN_SKILL_QUERY = "SELECT * FROM awoken_skills"
+
 AWAKENINGS_QUERY = """SELECT
   awakenings{0}.monster_id,
   awakenings{0}.is_super,
   awakenings{0}.order_idx,
-  awoken_skills.*
+  awakenings{0}.awoken_skill_id
 FROM
   awakenings{0}
-  JOIN awoken_skills ON awakenings{0}.awoken_skill_id = awoken_skills.awoken_skill_id"""
+"""
 
 EGG_QUERY = """SELECT
    d_egg_machine_types.name AS type,
@@ -198,6 +200,7 @@ class MonsterGraph:
         es = self.database.query_many(EVOS_QUERY.format(table_suffix))
         tfs = self.database.query_many(TRANSFORMS_QUERY.format(table_suffix))
         aws = self.database.query_many(AWAKENINGS_QUERY.format(table_suffix))
+        awss = self.database.query_many(AWOKEN_SKILL_QUERY)
         ems = self.database.query_many(EGG_QUERY.format(table_suffix) + where)
         exs = self.database.query_many(EXCHANGE_QUERY.format(table_suffix) + where)
 
@@ -257,10 +260,13 @@ class MonsterGraph:
             })
         acts = {asid: ActiveSkillModel(**act) for asid, act in acts.items()}
 
+        awoken_skills = {}
+        for awoken_skill in awss:
+            awoken_skills[awoken_skill.awoken_skill_id] = AwokenSkillModel(**awoken_skill)
+
         mtoawo = defaultdict(list)
         for a in aws:
-            awoken_skill_model = AwokenSkillModel(**a)
-            awakening_model = AwakeningModel(awoken_skill_model=awoken_skill_model, **a)
+            awakening_model = AwakeningModel(awoken_skills[a.awoken_skill_id], **a)
             mtoawo[a.monster_id].append(awakening_model)
 
         mtoegg = defaultdict(lambda: {'pem': False, 'rem': False, 'adpem': False})
@@ -374,7 +380,8 @@ class MonsterGraph:
                                    gif_size=m.gif_size,
                                    hq_png_size=m.hq_png_size,
                                    hq_gif_size=m.hq_gif_size,
-                                   icon_cachebreak=ICON_CACHEBREAKS.get(m.monster_id)
+                                   icon_cachebreak=ICON_CACHEBREAKS.get(m.monster_id),
+                                   sync_awokenskill=m.sync_awsid and awoken_skills[m.sync_awsid]
                                    )
             if not m_model:
                 continue

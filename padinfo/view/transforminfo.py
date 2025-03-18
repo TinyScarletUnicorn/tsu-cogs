@@ -3,14 +3,14 @@ from typing import List, Optional, TYPE_CHECKING
 from discordmenu.embed.base import Box
 from discordmenu.embed.components import EmbedField
 from discordmenu.embed.text import BoldText, LabeledText, Text
+
+from padinfo.view.components.base_id_main_view import BaseIdMainView
+from padinfo.view.components.padinfo_view import PadinfoViewState
 from tsutils.menu.components.config import UserConfig
 from tsutils.query_settings.enums import LsMultiplier
 from tsutils.query_settings.query_settings import QuerySettings
 from tsutils.tsubaki.custom_emoji import get_emoji
 from tsutils.tsubaki.monster_header import MonsterHeader
-
-from padinfo.view.components.base_id_main_view import BaseIdMainView
-from padinfo.view.components.padinfo_view import PadinfoViewState
 
 if TYPE_CHECKING:
     from dbcog.models.monster_model import MonsterModel
@@ -105,7 +105,7 @@ class TransformInfoView(BaseIdMainView):
                 else Box(Text('No Awakenings')),
                 delimiter=' '
             ),
-            cls.super_awakenings_row(m)
+            cls.super_awakenings_row(m), cls.sync_awakening_row(m),
         )
 
     @classmethod

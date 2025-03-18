@@ -1,13 +1,14 @@
 import re
 from datetime import datetime
-from typing import Set, Optional, List, Dict, Any
+from typing import Any, Dict, List, Optional, Set
 
 import romkan
+
 from tsutils.enums import Server
 from tsutils.formatting import contains_ja, rmdiacritics
-
 from .active_skill_model import ActiveSkillModel
 from .awakening_model import AwakeningModel
+from .awoken_skill_model import AwokenSkillModel
 from .base_model import BaseModel
 from .enum_types import Attribute, AwakeningRestrictedLatent, MonsterType, enum_or_none
 from .leader_skill_model import LeaderSkillModel
@@ -33,6 +34,8 @@ class MonsterModel(BaseModel):
 
         self.awakenings: List[AwakeningModel] = sorted(m['awakenings'], key=lambda a: a.order_idx)
         self.superawakening_count: int = sum(int(a.is_super) for a in self.awakenings)
+        self.sync_awakening: AwokenSkillModel = m['sync_awokenskill']
+        self.base_evo_id: int = m['base_evo_id']
         self.leader_skill: LeaderSkillModel = m['leader_skill']
         self.leader_skill_id: int = self.leader_skill.leader_skill_id if self.leader_skill else None
         self.active_skill: ActiveSkillModel = m['active_skill']
