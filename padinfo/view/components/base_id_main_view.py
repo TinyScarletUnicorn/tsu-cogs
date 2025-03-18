@@ -1,25 +1,25 @@
 from abc import ABC
-from typing import Dict, List, Optional, TYPE_CHECKING
+from typing import Dict, List, Optional, TYPE_CHECKING, Union
 
 import jinja2
 from discordmenu.embed.base import Box
 from discordmenu.embed.text import BoldText, Text
 from discordmenu.emoji.emoji_cache import emoji_cache
-from tsutils.query_settings.enums import LsMultiplier, SkillDisplay
-from tsutils.tsubaki.custom_emoji import get_awakening_emoji, get_emoji, number_emoji_small
 
 from padinfo.core.leader_skills import ls_multiplier_text, ls_single_multiplier_text
 from padinfo.view.components.view_state_base_id import IdBaseView
+from tsutils.query_settings.enums import LsMultiplier, SkillDisplay
+from tsutils.tsubaki.custom_emoji import get_awakening_emoji, get_emoji, number_emoji_small
 
 if TYPE_CHECKING:
     from dbcog.models.leader_skill_model import LeaderSkillModel
     from dbcog.models.monster_model import MonsterModel
     from dbcog.models.active_skill_model import ActiveSkillModel
-    from dbcog.models.awakening_model import AwakeningModel
     from dbcog.models.awoken_skill_model import AwokenSkillModel
+    from dbcog.models.awakening_model import AwakeningModel
 
 
-def _get_awakening_text(awakening: "AwakeningModel"):
+def _get_awakening_text(awakening: "Union[AwakeningModel, AwokenSkillModel]"):
     return get_awakening_emoji(awakening.awoken_skill_id, awakening.name)
 
 
@@ -71,16 +71,26 @@ class BaseIdMainView(IdBaseView, ABC):
             delimiter=' ') if len(super_awakenings_emojis) > 0 else None
 
     @staticmethod
+    def sync_awakening_row(m: "MonsterModel"):
+        if m.sync_awakening is None:
+            return None
+
+        return Box(
+            Text(get_emoji('sync_icon')),
+            Text(_get_awakening_text(m.sync_awakening)),
+            delimiter=' ')
+
+    @staticmethod
     def killers_row(m: "MonsterModel", transform_base):
         killers = m.killers if m == transform_base else transform_base.killers
-        killers_text = 'Any' if 'Any' in killers else \
+        killers_text = 'Any killers' if 'Any' in killers else \
             ' '.join(_killer_latent_emoji(k) for k in killers)
         return Box(
-            BoldText('Available killers:'),
-            Text('\N{DOWN-POINTING RED TRIANGLE}' if m != transform_base else ''),
-            Text('[{} slots]'.format(m.latent_slots if m == transform_base
-                                     else transform_base.latent_slots)),
+            # BoldText('Available killers:'),
+            # Text('\N{DOWN-POINTING RED TRIANGLE}' if m != transform_base else ''),
             Text(killers_text),
+            Text('x{}'.format(m.latent_slots if m == transform_base
+                                     else transform_base.latent_slots)),
             delimiter=' '
         )
 

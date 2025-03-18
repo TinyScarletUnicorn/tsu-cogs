@@ -2,15 +2,14 @@ import re
 from collections import defaultdict
 from typing import Any, DefaultDict, Dict, Iterable, List, Optional, Set, Tuple, Union
 
-from tsutils.enums import Server
-from tsutils.formatting import rmdiacritics
-from tsutils.query_settings.query_settings import QuerySettings
-
 from dbcog.find_monster.extra_info import ExtraInfo
 from dbcog.find_monster.tokens.find_monster_tokens import EPSILON, MODIFIER_JW_DISTANCE, MatchData, MatchMap, \
     MonsterInfo, MonsterMatch, QueryToken, SpecialToken, \
     TOKEN_JW_DISTANCE, TokenMatch, calc_ratio_modifier, calc_ratio_name, string_to_token
 from dbcog.models.monster_model import MonsterModel
+from tsutils.enums import Server
+from tsutils.formatting import rmdiacritics
+from tsutils.query_settings.query_settings import QuerySettings
 
 SERIES_TYPE_PRIORITY = {
     "regular": 4,
@@ -227,6 +226,7 @@ class FindMonster:
     def get_most_eligable_monster(self, monsters: Iterable[MonsterModel], tokenized_query: List[str] = None,
                                   matches: MatchMap = None) -> MonsterModel:
         """Get the most eligable monster from a list of monsters and debug info from a query"""
+        print(monsters, tokenized_query, matches)
         if matches is None:
             matches = defaultdict(MonsterMatch)
         if tokenized_query is None:
