@@ -381,7 +381,7 @@ class MonsterGraph:
                                    hq_png_size=m.hq_png_size,
                                    hq_gif_size=m.hq_gif_size,
                                    icon_cachebreak=ICON_CACHEBREAKS.get(m.monster_id),
-                                   sync_awokenskill=m.sync_awsid and awoken_skills[m.sync_awsid]
+                                   sync_awokenskill=m.sync_awsid and awoken_skills.get(m.sync_awsid)
                                    )
             if not m_model:
                 continue
