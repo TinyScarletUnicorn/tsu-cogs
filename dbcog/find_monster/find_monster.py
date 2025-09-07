@@ -226,7 +226,6 @@ class FindMonster:
     def get_most_eligable_monster(self, monsters: Iterable[MonsterModel], tokenized_query: List[str] = None,
                                   matches: MatchMap = None) -> MonsterModel:
         """Get the most eligable monster from a list of monsters and debug info from a query"""
-        print(monsters, tokenized_query, matches)
         if matches is None:
             matches = defaultdict(MonsterMatch)
         if tokenized_query is None:
