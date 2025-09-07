@@ -912,9 +912,10 @@ class MonsterGraph:
         return monster.name_en.endswith("'s Gem") or monster.name_ja.endswith("の希石")
 
     def monster_is_gfe_exchange(self, monster: MonsterModel, stars: Optional[int] = None) -> bool:
-        monsters = {self.get_monster(mid, server=monster.server_priority)
+        monsters = {mon
                     for exc in self.get_monster_exchange_models(monster)
-                    for mid in exc.required_monster_ids}
+                    for mid in exc.required_monster_ids
+                    if (mon := self.get_monster(mid, server=monster.server_priority)) is not None}
         if stars is not None:
             monsters = {m for m in monsters if m.rarity == stars}
         return len({m for m in monsters for s in m.all_series if s.series_id == 34}) > 1
