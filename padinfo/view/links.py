@@ -19,9 +19,7 @@ class LinksView:
     def linksbox(m):
         return Box(
             LinkedText('YouTube', MonsterLink.youtube_search(m)),
-            LinkedText('Skyozora', MonsterLink.skyozora(m)),
-            LinkedText('PADIndex', MonsterLink.padindex(m)),
-            LinkedText('Ilmina', MonsterLink.ilmina(m)),
+            LinkedText('Sanbon', MonsterLink.sanbon(m)),
             delimiter=' | ')
 
     @staticmethod

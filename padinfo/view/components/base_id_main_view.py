@@ -152,6 +152,11 @@ class BaseIdMainView(IdBaseView, ABC):
 
     @staticmethod
     def leader_skill_header(m: "MonsterModel", lsmultiplier: LsMultiplier, transform_base: "MonsterModel"):
+        jinja2_replacements = {
+            'awoskills': {f"id{awid}": f"{get_awakening_emoji(awid)} {awo.name_en}"
+                          for awid, awo in awoken_skill_map.items()}
+        }
+
         return Box(
             BoldText('LS'),
             BoldText(ls_multiplier_text(m.leader_skill) if lsmultiplier == LsMultiplier.lsdouble
