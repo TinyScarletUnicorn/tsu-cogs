@@ -285,7 +285,7 @@ class IdView(BaseIdMainView, EvoScrollView):
             ),
             EmbedField(
                 cls.leader_skill_header(m, qs.lsmultiplier, state.transform_base).to_markdown(),
-                cls.leader_skill_text(m.leader_skill, qs.skilldisplay)
+                cls.leader_skill_text(m.leader_skill, state.awoken_skill_map, qs.skilldisplay)
             ),
             cls.evos_embed_field(state)
         ]

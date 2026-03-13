@@ -43,7 +43,6 @@ def _make_suffix(idx, skill, subskill):
 
 
 class BaseIdMainView(IdBaseView, ABC):
-
     transform_emoji_names = ['downr', 'downo', 'downy', 'downg', 'downb', 'downp']
     up_emoji_name = 'upgr'
     down_emoji_name = transform_emoji_names[0]
@@ -90,7 +89,7 @@ class BaseIdMainView(IdBaseView, ABC):
             # Text('\N{DOWN-POINTING RED TRIANGLE}' if m != transform_base else ''),
             Text(killers_text),
             Text('x{}'.format(m.latent_slots if m == transform_base
-                                     else transform_base.latent_slots)),
+                              else transform_base.latent_slots)),
             delimiter=' '
         )
 
@@ -152,11 +151,6 @@ class BaseIdMainView(IdBaseView, ABC):
 
     @staticmethod
     def leader_skill_header(m: "MonsterModel", lsmultiplier: LsMultiplier, transform_base: "MonsterModel"):
-        jinja2_replacements = {
-            'awoskills': {f"id{awid}": f"{get_awakening_emoji(awid)} {awo.name_en}"
-                          for awid, awo in awoken_skill_map.items()}
-        }
-
         return Box(
             BoldText('LS'),
             BoldText(ls_multiplier_text(m.leader_skill) if lsmultiplier == LsMultiplier.lsdouble
@@ -167,10 +161,16 @@ class BaseIdMainView(IdBaseView, ABC):
         )
 
     @classmethod
-    def leader_skill_text(cls, leader_skill: "LeaderSkillModel", skilldisplay: SkillDisplay):
+    def leader_skill_text(cls, leader_skill: "LeaderSkillModel", awoken_skill_map: Dict[int, "AwokenSkillModel"],
+                          skilldisplay: SkillDisplay):
         if leader_skill is None:
             return Text('None')
 
+        jinja2_replacements = {
+            'awoskills': {f"id{awid}": f"{get_awakening_emoji(awid)} {awo.name_en}"
+                          for awid, awo in awoken_skill_map.items()}
+        }
+
         if skilldisplay == SkillDisplay.skillnames:
             return Text(leader_skill.name_en)
-        return Text(leader_skill.desc)
+        return Text(jinja2.Template(leader_skill.desc).render(**jinja2_replacements))
