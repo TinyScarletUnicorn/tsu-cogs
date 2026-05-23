@@ -532,7 +532,11 @@ class MonsterGraph:
         return mons
 
     def process_alt_ids(self, monster: MonsterModel) -> List[int]:
-        return [m.monster_id for m in self.process_alt_monsters_from_base(self.get_base_monster(monster))]
+        alt_ids = [m.monster_id for m in self.process_alt_monsters_from_base(self.get_base_monster(monster))]
+        if monster.monster_id not in alt_ids:
+            logger.warning(f'Monster not in own alt_ids: {monster}')
+            alt_ids.append(monster.monster_id)
+        return alt_ids
 
     def process_alt_monsters_from_base(self, base_monster: MonsterModel) -> List[MonsterModel]:
         ids = [base_monster]
